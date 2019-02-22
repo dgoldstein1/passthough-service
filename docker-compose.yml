@@ -1,0 +1,19 @@
+version: '2'
+
+####################################################################
+## Local configuration for Prometheus and a few example services  ##
+####################################################################
+
+services:
+
+  random-number-generator:
+    image : dgoldstein1/random-number-generator
+    ports:
+      - 7002:8080
+
+
+  # to test: "curl localhost:7002/get?url=random-number-generator:8080/randomNumber"
+  passthrough-service:
+    image: dgoldstein1/passthrough-service
+    ports:
+      - 7001:8080
