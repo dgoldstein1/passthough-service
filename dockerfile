@@ -24,6 +24,8 @@ RUN dep ensure -v
 
 # configure entrypoint
 RUN go build
+ENV PORT 3000
+ENV MESH_ID "NOT_SET"
 
 ENTRYPOINT ["./passthrough-service"]
 

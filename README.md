@@ -9,8 +9,13 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 
 ## API
 
-`/get?url` -- makes a get request to the specified url
+`/get?url=http://google.com` -- makes a get request to the specified url
+`/get?pause=5` -- pauses for 5 seconds before sending the request
+`/ping` return `Pong from Mesh: $MESH_ID`
+## Env
 
+`PORT` port service is served from
+`MESH_ID` mesh service is currently in
 
 ## Authors
 
