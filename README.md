@@ -13,12 +13,16 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 
 `/get?pause=5` -- pauses for 5 seconds before sending the request
 
-`/ping` return `Pong from Mesh: $MESH_ID`
+`/ping?pause=5` return `Pong from Mesh: $MESH_ID`. Hits ball to `PING_RESPONSE_URL`
+
+`/serve` serves the ball to `PING_RESPONSE_URL`
 
 ## Env
 
 `PORT` port service is served from
-`MESH_ID` mesh service is currently in
+`MESH_ID` mesh service is currently in_
+`PING_RESPONSE_URL` where to hit the ball to
+
 
 ## Authors
 
