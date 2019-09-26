@@ -13,7 +13,9 @@ import (
 
 func pong(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Received ping from %v. Connection type: %v\n", r.Host, r.Proto)
-	fmt.Fprintf(w, "Pong from Mesh: %s", os.Getenv("MESH_ID"))
+	fmt.Fprintf(w, "Pong from Mesh: %s \n", os.Getenv("MESH_ID"))
+	// make new get request to PING_RESPONSE_URL
+	fmt.Printf("making new ")
 }
 
 func get(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +24,7 @@ func get(w http.ResponseWriter, r *http.Request) {
 
 	if r.Form.Get("url") == "" {
 		fmt.Println("Error: must pass 'url'")
-		fmt.Fprintf(w, "Error: must pass 'url'")
+		fmt.Fprintf(w, "Error: must pass 'url' \n")
 		return
 	}
 
@@ -31,7 +33,7 @@ func get(w http.ResponseWriter, r *http.Request) {
 		n, err := strconv.Atoi(pause)
 		if err != nil {
 			fmt.Printf("Error getting pause %s: %s \n", pause, err.Error())
-			fmt.Fprintf(w, "bad pause: %s", err.Error())
+			fmt.Fprintf(w, "bad pause: %s \n", err.Error())
 			return
 		}
 		fmt.Printf("sleeping for %d s\n", n)
@@ -42,18 +44,18 @@ func get(w http.ResponseWriter, r *http.Request) {
 	res, err := http.Get(r.Form.Get("url"))
 	if err != nil {
 		fmt.Printf("Error: %s \n", err.Error())
-		fmt.Fprintf(w, err.Error())
+		fmt.Fprintf(w, "error making get request: %s \n", err.Error())
 		return
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Printf("Error reading response: %s \n", err.Error())
-		fmt.Fprintf(w, err.Error())
+		fmt.Fprintf(w, "Error reading response %s \n", err.Error())
 		return
 	}
 	fmt.Printf("Received response from '%s': %s \n", r.Form.Get("url"), string(body))
-	fmt.Fprintf(w, string(body))
+	fmt.Fprintf(w, string(body)+"\n")
 }
 
 func main() {

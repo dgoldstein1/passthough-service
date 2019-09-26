@@ -32,4 +32,4 @@ ENTRYPOINT ["./passthrough-service"]
 # expose service ports
 EXPOSE 10000
 EXPOSE 10001
-EXPOSE 8080
+EXPOSE 3000
