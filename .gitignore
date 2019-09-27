@@ -12,3 +12,6 @@
 vendor
 *.out
 passthrough-service
+
+*.crt
+*.key

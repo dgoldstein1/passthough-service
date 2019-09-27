@@ -1,6 +1,9 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/base64"
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
 	"io/ioutil"
@@ -12,11 +15,13 @@ import (
 	"time"
 )
 
+var client = &http.Client{}
+
 // makes ping request to PING_RESPONES_URL
 func serve(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Serving to %s\n", os.Getenv("PING_RESPONSE_URL"))
 	go func() {
-		_, err := http.Get(os.Getenv("PING_RESPONSE_URL"))
+		_, err := client.Get(os.Getenv("PING_RESPONSE_URL"))
 		if err != nil {
 			fmt.Printf("Error: %s \n", err.Error())
 			fmt.Fprintf(w, "error making get request to %s: %s \n", os.Getenv("PING_RESPONSE_URL"), err.Error())
@@ -52,7 +57,7 @@ func pong(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("sleeping for %d s\n", n)
 			time.Sleep(time.Duration(int32(n)) * time.Second)
 		}
-		res, err := http.Get(os.Getenv("PING_RESPONSE_URL"))
+		res, err := client.Get(os.Getenv("PING_RESPONSE_URL"))
 		if err != nil {
 			fmt.Printf("Error: %s \n", err.Error())
 			fmt.Fprintf(w, "error making get request to %s: %s \n", os.Getenv("PING_RESPONSE_URL"), err.Error())
@@ -90,8 +95,10 @@ func get(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(time.Duration(int32(n)) * time.Second)
 		// time.Sleep(time.Duration(rand.Int31n(1000)) * time.Millisecond)
 	}
-
-	res, err := http.Get(r.Form.Get("url"))
+	res, err := client.Get(r.Form.Get("url"))
+	if err != nil {
+		panic(err)
+	}
 	if err != nil {
 		fmt.Printf("Error: %s \n", err.Error())
 		fmt.Fprintf(w, "error making get request to %s: %s \n", r.Form.Get("url"), err.Error())
@@ -105,7 +112,28 @@ func get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Printf("Received response from '%s': %s \n", r.Form.Get("url"), string(body))
-	fmt.Fprintf(w, string(body)+"\n")
+	fmt.Fprintf(w, "%s\n", string(body))
+}
+
+// write base64 env variables to file, panic on error
+func writebase64File(filename string, b64 string) {
+	os.Remove(filename)
+	fmt.Printf("writing file %s\n", filename)
+	dec, err := base64.StdEncoding.DecodeString(b64)
+	if err != nil {
+		panic(err)
+	}
+	f, err := os.Create(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	if _, err := f.Write(dec); err != nil {
+		panic(err)
+	}
+	if err := f.Sync(); err != nil {
+		panic(err)
+	}
 }
 
 func main() {
@@ -118,6 +146,40 @@ func main() {
 	if port == "" {
 		fmt.Println("no port set")
 		os.Exit(1)
+	}
+
+	// load in certs
+	if os.Getenv("USE_TLS") == "true" {
+		certFile := "server.crt"
+		keyFile := "server.key"
+		caFile := "server-ca.crt"
+		writebase64File(certFile, os.Getenv("SERVER_CERT"))
+		writebase64File(keyFile, os.Getenv("SERVER_KEY"))
+		writebase64File(caFile, os.Getenv("SERVER_CA"))
+
+		// Load certs
+		cert, err := tls.LoadX509KeyPair(certFile, keyFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Load CA cert
+		caCert, err := ioutil.ReadFile(caFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		caCertPool := x509.NewCertPool()
+		caCertPool.AppendCertsFromPEM(caCert)
+
+		// Setup HTTPS client
+		tlsConfig := &tls.Config{
+			Certificates:       []tls.Certificate{cert},
+			RootCAs:            caCertPool,
+			InsecureSkipVerify: true,
+		}
+		tlsConfig.BuildNameToCertificate()
+		transport := &http.Transport{TLSClientConfig: tlsConfig}
+		client = &http.Client{Transport: transport}
 	}
 
 	log.Printf("Serving on port %s", port)

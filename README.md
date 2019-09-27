@@ -20,8 +20,19 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 ## Env
 
 `PORT` port service is served from
-`MESH_ID` mesh service is currently in_
+
+`MESH_ID` mesh service is currently in
+
 `PING_RESPONSE_URL` where to hit the ball to
+
+`USE_TLS` toggle true/ false for use tls
+
+`SERVER_CERT` base64 encoded string of server certificate
+
+`SERVER_KEY` base64 encoded string of server key
+
+`SERVER_CA` base 64 encoded string of server CA
+
 
 
 ## Authors

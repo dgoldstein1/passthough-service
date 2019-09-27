@@ -26,6 +26,10 @@ RUN dep ensure -v
 RUN go build
 ENV PORT 3000
 ENV MESH_ID "NOT_SET"
+ENV SERVER_CERT ""
+ENV SERVER_KET ""
+ENV SERVER_CA ""
+ENV USE_TLS "false"
 
 ENTRYPOINT ["./passthrough-service"]
 
