@@ -150,12 +150,20 @@ func main() {
 
 	// load in certs
 	if os.Getenv("USE_TLS") == "true" {
-		certFile := "server.crt"
-		keyFile := "server.key"
-		caFile := "server-ca.crt"
-		writebase64File(certFile, os.Getenv("SERVER_CERT"))
-		writebase64File(keyFile, os.Getenv("SERVER_KEY"))
-		writebase64File(caFile, os.Getenv("SERVER_CA"))
+		certFile := os.Getenv("SERVER_CERT")
+		keyFile := os.Getenv("SERVER_KEY")
+		caFile := os.Getenv("SERVER_CA")
+
+		// if read from env is true, write files from env variables
+		if os.Getenv("READ_TLS_FROM_ENV") == "true" {
+			fmt.Println("reading tls from env variables")
+			certFile = "server.crt"
+			keyFile = "server.key"
+			caFile = "server-ca.crt"
+			writebase64File(certFile, os.Getenv("SERVER_CERT"))
+			writebase64File(keyFile, os.Getenv("SERVER_KEY"))
+			writebase64File(caFile, os.Getenv("SERVER_CA"))
+		}
 
 		// Load certs
 		cert, err := tls.LoadX509KeyPair(certFile, keyFile)

@@ -27,13 +27,13 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 
 `USE_TLS` toggle true/ false for use tls
 
-`SERVER_CERT` base64 encoded string of server certificate
+`SERVER_CERT` base64 encoded string OR path to server certificate
 
-`SERVER_KEY` base64 encoded string of server key
+`SERVER_KEY` base64 encoded string OR path to server key
 
-`SERVER_CA` base 64 encoded string of server CA
+`SERVER_CA` base 64 encoded string OR path to server CA
 
-
+`READ_TLS_FROM_ENV` when 'true', reads certificates and keys from base64 encoded strings instead of paths.
 
 ## Authors
 
