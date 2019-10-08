@@ -104,9 +104,9 @@ func get(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	if os.Getenv("USER_DN") != "" {
+	if r.Form.Get("user_dn") != "" {
 		fmt.Println("adding user_dn to header")
-		request.Header.Set("user_dn", os.Getenv("USER_DN"))
+		request.Header.Set("user_dn", r.Form.Get("user_dn"))
 	}
 	res, err := client.Do(request)
 	if err != nil {

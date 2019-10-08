@@ -11,7 +11,7 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 
 `/get?url=http://google.com` -- makes a get request to the specified url
 
-`/get?pause=5` -- pauses for 5 seconds before sending the request
+`/get?pause=5?user_dn=test` -- pauses for 5 seconds before sending the request with the user_dn "test"
 
 `/ping?pause=5` return `Pong from Mesh: $MESH_ID`. Hits ball to `PING_RESPONSE_URL`
 
@@ -36,8 +36,6 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 `READ_TLS_FROM_ENV` when 'true', reads certificates and keys from base64 encoded strings instead of paths.
 
 `LOG_HEADERS` if 'true', log headers on incoming requests to `/ping`
-
-`USER_DN` user dn header to add on get requests
 
 ## Authors
 
