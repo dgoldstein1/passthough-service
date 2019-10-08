@@ -41,6 +41,9 @@ func pong(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Ball out of bounds")
 		return
 	}
+	if os.Getenv("LOG_HEADERS") == "true" {
+		fmt.Printf("request headers %v \n", spew.Sdump(r.Header))
+	}
 	// write response
 	fmt.Fprintf(w, "Pong. mesh=%s \n", os.Getenv("MESH_ID"))
 	// hit back in go routine

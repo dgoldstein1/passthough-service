@@ -35,6 +35,8 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 
 `READ_TLS_FROM_ENV` when 'true', reads certificates and keys from base64 encoded strings instead of paths.
 
+`LOG_HEADERS` if 'true', log headers on incoming requests to `/ping`
+
 ## Authors
 
 * **David Goldstein** - [DavidCharlesGoldstein.com](http://www.davidcharlesgoldstein.com/?github-password-service) - [Decipher Technology Studios](http://deciphernow.com/)
