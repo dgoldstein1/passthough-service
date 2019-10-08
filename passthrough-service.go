@@ -98,7 +98,17 @@ func get(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(time.Duration(int32(n)) * time.Second)
 		// time.Sleep(time.Duration(rand.Int31n(1000)) * time.Millisecond)
 	}
-	res, err := client.Get(r.Form.Get("url"))
+	client := &http.Client{}
+	request, err := http.NewRequest("GET", r.Form.Get("url"), nil)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	if os.Getenv("USER_DN") != "" {
+		fmt.Println("adding user_dn to header")
+		request.Header.Set("user_dn", os.Getenv("USER_DN"))
+	}
+	res, err := client.Do(request)
 	if err != nil {
 		panic(err)
 	}
