@@ -23,7 +23,7 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 
 `MESH_ID` mesh service is currently in
 
-`PING_RESPONSE_URL` where to hit the ball to
+`PING_RESPONSE_URL` where to hit the ball to. If left blank `""`, will not serve back to a URL or play ping pong.
 
 `USE_TLS` toggle true/ false for use tls
 

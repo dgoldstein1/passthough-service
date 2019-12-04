@@ -35,6 +35,12 @@ func serve(w http.ResponseWriter, r *http.Request) {
 func pong(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	fmt.Printf("\nReceived ping from %v. Connection type: %v\n", r.Host, r.Proto)
+	// write response
+	fmt.Fprintf(w, "Pong. mesh=%s \n", os.Getenv("MESH_ID"))
+	// don't do anything if url is empty is false
+	if os.Getenv("PING_RESPONSE_URL") == "" {
+		return
+	}
 	// make new get request to PING_RESPONSE_URL
 	if rand.Intn(20) == 10 {
 		fmt.Println("Ball of out bounds")
@@ -44,8 +50,6 @@ func pong(w http.ResponseWriter, r *http.Request) {
 	if os.Getenv("LOG_HEADERS") == "true" {
 		fmt.Printf("request headers %v \n", spew.Sdump(r.Header))
 	}
-	// write response
-	fmt.Fprintf(w, "Pong. mesh=%s \n", os.Getenv("MESH_ID"))
 	// hit back in go routine
 	go func() {
 		fmt.Printf("hitting back to: %s\n", os.Getenv("PING_RESPONSE_URL"))
