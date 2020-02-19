@@ -17,6 +17,8 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 
 `/serve` serves the ball to `PING_RESPONSE_URL`
 
+`/error?rCode=503` returns a json error with the response code `rCode`
+
 ## Env
 
 `PORT` port service is served from

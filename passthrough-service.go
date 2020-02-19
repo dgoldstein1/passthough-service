@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
 	"io/ioutil"
@@ -16,6 +17,29 @@ import (
 )
 
 var client = &http.Client{}
+
+type errorResponse struct {
+	Msg   string
+	RCode int
+}
+
+// returns error in query, otherwise 500 error
+func error(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("\nReceived request from %v. Connection type: %v\n", r.Host, r.Proto)
+	r.ParseForm()
+	rCode := r.Form.Get("rCode")	
+	n, err := strconv.Atoi(rCode)
+	if err != nil {
+		fmt.Printf("Error getting rCode %s: %s \n", rCode, err.Error())
+		fmt.Fprintf(w, "bad rCode: %s \n", err.Error())
+		return
+	}
+	// return response with respones code
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(n)
+	json.NewEncoder(w).Encode(errorResponse{"example-error", n})
+
+}
 
 // makes ping request to PING_RESPONES_URL
 func serve(w http.ResponseWriter, r *http.Request) {
@@ -156,6 +180,7 @@ func main() {
 	http.HandleFunc("/get", get)
 	http.HandleFunc("/ping", pong)
 	http.HandleFunc("/serve", serve)
+	http.HandleFunc("/error", error)
 
 	// parse port
 	port := os.Getenv("PORT")
