@@ -39,6 +39,8 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 
 `LOG_HEADERS` if 'true', log headers on incoming requests to `/ping`
 
+`LOG_BODY` if 'true', log bodies on incoming requests to `/ping`
+
 ## Authors
 
 * **David Goldstein** - [DavidCharlesGoldstein.com](http://www.davidcharlesgoldstein.com/?github-password-service) - [Decipher Technology Studios](http://deciphernow.com/)

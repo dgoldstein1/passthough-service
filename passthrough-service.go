@@ -27,7 +27,7 @@ type errorResponse struct {
 func error(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("\nReceived request from %v. Connection type: %v\n", r.Host, r.Proto)
 	r.ParseForm()
-	rCode := r.Form.Get("rCode")	
+	rCode := r.Form.Get("rCode")
 	n, err := strconv.Atoi(rCode)
 	if err != nil {
 		fmt.Printf("Error getting rCode %s: %s \n", rCode, err.Error())
@@ -61,6 +61,9 @@ func pong(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("\nReceived ping from %v. Connection type: %v\n", r.Host, r.Proto)
 	if os.Getenv("LOG_HEADERS") == "true" {
 		fmt.Printf("request headers %v \n", spew.Sdump(r.Header))
+	}
+	if os.Getenv("LOG_BODY") == "true" {
+		fmt.Printf("request body %v \n", spew.Sprint(r.Form))
 	}
 	// write response
 	fmt.Fprintf(w, "Pong. mesh=%s \n", os.Getenv("MESH_ID"))
