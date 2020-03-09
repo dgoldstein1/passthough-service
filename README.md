@@ -41,6 +41,8 @@ docker run -p 8080:8080 dgoldstein1/passthrough-service
 
 `LOG_BODY` if 'true', log bodies on incoming requests to `/ping`
 
+`USE_HTTP2` makes the server only server an unecrypted http2 endpoint `/`
+
 ## Authors
 
 * **David Goldstein** - [DavidCharlesGoldstein.com](http://www.davidcharlesgoldstein.com/?github-password-service) - [Decipher Technology Studios](http://deciphernow.com/)

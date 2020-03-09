@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -235,8 +237,28 @@ func main() {
 	}
 
 	log.Printf("Serving on port %s", port)
-	err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil) // set listen port
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+
+	addr := fmt.Sprintf(":%s", port)
+	if os.Getenv("USE_HTTP2") == "true" {
+		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Printf("incoming request: %v\n", r.Proto)
+			if !r.ProtoAtLeast(2, 0) {
+				fmt.Fprint(w, "Http connections below 2.0 are not accepted\n")
+			} else {
+				fmt.Fprint(w, "Hello from the world of http2 <3\n")
+			}
+		})
+		h2s := &http2.Server{}
+		h1s := &http.Server{
+			Addr:    addr,
+			Handler: h2c.NewHandler(handler, h2s),
+		}
+		log.Fatal(h1s.ListenAndServe())
+	} else {
+		err := http.ListenAndServe(addr, nil) // set listen port
+		if err != nil {
+			log.Fatal("ListenAndServe: ", err)
+		}
 	}
+
 }
